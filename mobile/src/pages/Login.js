@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from 'react';
-// import AsyncStorage from '@react-native-community/async-storage';
 import { KeyboardAvoidingView, StyleSheet, Platform, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import * as SecureStore from 'expo-secure-store';
 
 import api from '../services/api.js';
 
 import logo from '../assets/logo.png';
 
-export default function Login( {navigation }) {
+export default function Login() {
     const [user, setUser] = useState('');
+    const navigation = useNavigation();
 
     useEffect(() => {
-        // AsyncStorage.getItem('user').then(user => {
-        //     if (user) {
-        //         navigation.navigate('Main', { user })
-        //     }
-        // });
+        SecureStore.getItemAsync('user').then(user => {
+            if (user) {
+                navigation.navigate('Main', { user })
+            }
+        });
     }, []);
 
     async function handleLogin() {
         const response = await api.post('/devs', { username: user });
         const { _id } = response.data;
 
-        // await AsyncStorage.setItem('user', _id);
+        await SecureStore.setItemAsync('user', _id);
 
         navigation.navigate('Main', { user: _id });
     }

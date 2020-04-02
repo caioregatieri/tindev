@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { View, Text, SafeAreaView, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRoute } from '@react-navigation/native';
-// import AsyncStorage from '@react-native-community/async-storage';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import * as SecureStore from 'expo-secure-store';
 
 import api, { baseURL } from '../services/api.js';
 
@@ -13,6 +13,7 @@ import itsamatch from '../assets/itsamatch.png';
 
 export default function Main() {
     const route = useRoute();
+    const navigation = useNavigation();
 
     const id = route.params.user;
     const [users, setUsers] = useState([]);
@@ -69,7 +70,7 @@ export default function Main() {
     }
 
     async function handleLogout() {
-        // await AsyncStorage.clear();
+        SecureStore.deleteItemAsync('user');
 
         navigation.navigate('Login');
     }
